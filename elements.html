@@ -1,0 +1,66 @@
+<html>
+  <head>
+	<title>Canvas tutorial</title>
+	<script type="text/javascript">
+		var blobArray = [],
+			canvas, ctx,
+			speed = 30,
+			size = 10,
+			center;
+
+		function draw () {
+			var blob = {
+					x: center[0],
+					y: center[1],
+					xSpeed: randomRange(-10, 10),
+					ySpeed: randomRange(-10, 10)
+				},
+				radius = 5;
+
+			blobArray.push(blob);
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			var grd = ctx.createRadialGradient(238, 50, 10, 238, 50, 300);
+			// light blue
+			grd.addColorStop(0, '#8ED6FF');
+			// dark blue
+			grd.addColorStop(1, '#004CB3');
+
+			for (var i = 0; i < blobArray.length; i++) {
+				blob = blobArray[i];
+				// ctx.fillStyle = 'gray';
+				// ctx.fillRect(blob.x, blob.y, size, size);
+				ctx.beginPath();
+				ctx.arc(blob.x, blob.y, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = grd;
+				ctx.fill();
+				
+				blob.x = blob.x + blob.xSpeed;
+				blob.y = blob.y + blob.ySpeed;
+			}
+		}
+
+		function run () {
+			canvas = document.getElementById('tutorial');
+
+			canvas.width = 500;
+			canvas.height = 500;
+			
+			ctx = canvas.getContext('2d');
+			center = [canvas.width/2, canvas.height/2];
+			setInterval(draw, speed);
+		}
+
+		function randomRange (min, max) {
+			return Math.random() * (max - min) + min;
+		}
+	</script>
+	<style type="text/css">
+	  canvas { border: 1px solid black; }
+	</style>
+  </head>
+  <body onload="run();">
+	<canvas id="tutorial"></canvas>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+var ctx
+	width = 500,
+	height = 500,
+	ticker = -16, // start at top
+	seconds = 60;
+
+var tick = function () {
+	
+	// Increments
+	ticker++;
+	if (ticker == seconds) {
+		ticker = 0;
+	}
+	
+	// Erase box contents
+	ctx.clearRect(0,0,width,height);
+
+	var cx = width/2, // center x axis
+		cy = height/2, // center y axis
+		lg_rad = 50, // large radius
+		sm_rad = 5, // small radius
+		nbr_circles = 12; // number of circles
+
+	var grd = ctx.createRadialGradient(238, 50, 10, 238, 50, 300);
+	grd.addColorStop(0, '#8ED6FF'); // light blue
+	grd.addColorStop(1, '#004CB3'); // dark blue
+	
+	// Draw clock face
+	ctx.beginPath();
+	ctx.arc(cx, cy, 60, 0, 2*Math.PI);
+	ctx.fillStyle = grd;
+	ctx.fill();
+
+	// Circles
+	for (var i = 1; i <= nbr_circles; i++) {
+		var angle = i*2*Math.PI/nbr_circles,
+			x = cx + Math.cos(angle) * lg_rad,
+			y = cy + Math.sin(angle) * lg_rad;
+		ctx.beginPath();
+		ctx.arc(x, y, 5, 0, 2*Math.PI, false);
+		ctx.fillStyle = '#fff';
+		ctx.fill();
+	};
+
+	// Second hand
+	ctx.beginPath();
+	ctx.moveTo(cx, cy); // pivot from centre
+	var angle2 = ticker*2*Math.PI/60;
+	ctx.lineTo(cx + Math.cos(angle2) * lg_rad, cy + Math.sin(angle2) * lg_rad);
+	ctx.lineCap = 'round';
+	ctx.strokeStyle = '#fff';
+	ctx.lineWidth = 3;
+	ctx.stroke();
+
+	// Rotate the circumference
+	ctx.beginPath();
+	ctx.arc(cx, cy, 60, ((2*Math.PI)/60)*(ticker+.5), ((2*Math.PI)/60)*(ticker-.5));
+	ctx.lineWidth = 3;
+	ctx.strokeStyle = 'gray';
+	ctx.stroke();
+};
+
+var canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
+
+canvas.width = width;
+canvas.height = height;
+
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
